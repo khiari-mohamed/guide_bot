@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Else — Guide officiel d'utilisation</title>
+<meta name="description" content="Guide officiel de la plateforme What Else — Campaign Control : fonctionnement, publication automatique et manuelle, validation, IA, analytics.">
+<style>
+:root{
+  --bg:#0b0d12;--bg2:#10131a;--card:#141824;--card2:#1a1f2e;--line:rgba(255,255,255,.08);
+  --tx:#e9ecf3;--mut:#9aa3b5;--gold:#f2b705;--gold2:#ffd35a;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--info:#60a5fa;
+  --r:16px;--sh:0 10px 40px rgba(0,0,0,.35)
+}
+:root[data-theme="light"]{
+  --bg:#f6f7fb;--bg2:#eef0f6;--card:#fff;--card2:#f3f4f9;--line:rgba(15,20,40,.1);
+  --tx:#171b27;--mut:#5b6478;--gold:#c58f00;--gold2:#a87800;--ok:#059669;--warn:#b45309;--bad:#dc2626;--info:#2563eb;--sh:0 10px 30px rgba(20,30,60,.08)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--tx);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:var(--gold2);text-decoration:none}a:hover{text-decoration:underline}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));z-index:100;transition:width .1s}
+.layout{display:flex;min-height:100vh}
+aside{position:sticky;top:0;height:100vh;width:290px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--line);display:flex;flex-direction:column;padding:22px 16px}
+.brand{display:flex;align-items:center;gap:12px;padding:0 8px 18px}
+.logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#14100a;font-weight:900;font-size:21px;display:grid;place-items:center;box-shadow:0 6px 20px rgba(242,183,5,.3)}
+.brand b{display:block;font-size:16px;letter-spacing:-.01em}.brand small{color:var(--mut);font-size:12px}
+.search{position:relative;margin:0 4px 12px}
+.search input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--tx);padding:10px 12px 10px 36px;border-radius:10px;font-size:14px;outline:none}
+.search input:focus{border-color:var(--gold)}
+.search svg{position:absolute;left:11px;top:11px;width:16px;height:16px;color:var(--mut)}
+nav{flex:1;overflow-y:auto;padding:0 4px;scrollbar-width:thin}
+nav a{display:flex;gap:10px;align-items:center;padding:8px 10px;border-radius:9px;color:var(--mut);font-size:14px;margin-bottom:1px;text-decoration:none;transition:.15s}
+nav a i{font-style:normal;font-size:11px;font-weight:700;width:22px;height:22px;border-radius:6px;background:var(--card);display:grid;place-items:center;flex-shrink:0}
+nav a:hover{background:var(--card);color:var(--tx)}
+nav a.on{background:rgba(242,183,5,.12);color:var(--gold2);font-weight:600}
+nav a.on i{background:var(--gold);color:#14100a}
+.side-foot{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--tx);padding:9px 14px;border-radius:10px;font-size:13px;cursor:pointer;font-weight:600;flex:1}
+.btn:hover{border-color:var(--gold)}
+.btn.gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#14100a;border:0}
+main{flex:1;min-width:0}
+.wrap{max-width:960px;margin:0 auto;padding:0 40px}
+.hero{position:relative;overflow:hidden;padding:90px 0 70px;border-bottom:1px solid var(--line);background:radial-gradient(900px 400px at 85% -10%,rgba(242,183,5,.18),transparent 60%),radial-gradient(700px 400px at -10% 110%,rgba(96,165,250,.12),transparent 60%)}
+.tag{display:inline-block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--gold2);border:1px solid rgba(242,183,5,.4);padding:6px 12px;border-radius:99px;margin-bottom:22px}
+.hero h1{font-size:clamp(34px,5vw,58px);line-height:1.08;letter-spacing:-.03em;font-weight:800}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{max-width:640px;color:var(--mut);font-size:18px;margin:20px 0 30px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.stat b{font-size:28px;color:var(--gold2);display:block;letter-spacing:-.02em}.stat span{font-size:13px;color:var(--mut)}
+section{padding:64px 0 8px;border-bottom:1px solid var(--line)}
+section:last-of-type{border:0}
+.kick{font-size:12px;font-weight:800;color:var(--gold2);letter-spacing:.14em;text-transform:uppercase}
+h2{font-size:clamp(26px,3.4vw,36px);letter-spacing:-.02em;line-height:1.15;margin:8px 0 14px}
+h3{font-size:19px;margin:34px 0 10px;letter-spacing:-.01em}
+p{margin:0 0 14px;color:var(--tx)}p.lead{color:var(--mut);font-size:17px;max-width:720px}
+ul,ol{margin:0 0 16px 22px}li{margin-bottom:6px}li::marker{color:var(--gold)}
+code,kbd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.88em;background:var(--card2);border:1px solid var(--line);padding:1px 7px;border-radius:6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--sh);margin:18px 0}
+.grid{display:grid;gap:16px;margin:18px 0}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.grid .card{margin:0}
+.ico{width:42px;height:42px;border-radius:12px;background:rgba(242,183,5,.12);color:var(--gold2);display:grid;place-items:center;font-size:20px;margin-bottom:12px}
+.card h4{font-size:16px;margin-bottom:6px}.card p{color:var(--mut);font-size:14.5px;margin:0}
+.note{display:flex;gap:14px;border-radius:14px;padding:16px 18px;margin:18px 0;border:1px solid;font-size:15px}
+.note>b{font-size:18px;line-height:1.4}.note div p{margin:0 0 6px}.note div p:last-child{margin:0}
+.note.tip{background:rgba(96,165,250,.08);border-color:rgba(96,165,250,.35)}
+.note.warn{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.4)}
+.note.ok{background:rgba(52,211,153,.08);border-color:rgba(52,211,153,.35)}
+.note.bad{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.4)}
+.steps{counter-reset:s;list-style:none;margin:18px 0}
+.steps li{counter-increment:s;position:relative;padding:4px 0 18px 54px;margin:0}
+.steps li:before{content:counter(s);position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#14100a;font-weight:800;display:grid;place-items:center}
+.steps li:after{content:"";position:absolute;left:17px;top:40px;bottom:2px;width:2px;background:var(--line)}
+.steps li:last-child:after{display:none}
+.steps li b{display:block;margin-bottom:2px}
+.path{display:inline-flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:2px 10px;font-size:13px;font-weight:600;color:var(--gold2);white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:14.5px;background:var(--card);border-radius:14px;overflow:hidden;border:1px solid var(--line);margin:18px 0}
+th,td{padding:12px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--card2);font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--mut)}
+tr:last-child td{border:0}
+.tbl{overflow-x:auto;margin:18px 0}.tbl table{margin:0;min-width:560px}
+.y{color:var(--ok);font-weight:700}.n{color:var(--bad);font-weight:700}.m{color:var(--warn);font-weight:700}
+.pill{display:inline-block;font-size:12px;font-weight:700;padding:3px 10px;border-radius:99px;white-space:nowrap}
+.p-g{background:rgba(52,211,153,.14);color:var(--ok)}.p-y{background:rgba(251,191,36,.14);color:var(--warn)}
+.p-r{background:rgba(248,113,113,.14);color:var(--bad)}.p-b{background:rgba(96,165,250,.14);color:var(--info)}.p-n{background:var(--card2);color:var(--mut)}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0}
+.flow .s{background:var(--card2);border:1px solid var(--line);padding:9px 14px;border-radius:10px;font-size:13.5px;font-weight:600}
+.flow .s.hl{border-color:var(--gold);color:var(--gold2)}.flow .s.hu{border-color:var(--ok);color:var(--ok)}
+.flow .a{color:var(--mut)}
+.lanes{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lane{border-radius:14px;padding:20px;border:1px solid var(--line);background:var(--card)}
+.lane.auto{border-color:rgba(52,211,153,.4);background:linear-gradient(180deg,rgba(52,211,153,.07),transparent)}
+.lane.man{border-color:rgba(251,191,36,.4);background:linear-gradient(180deg,rgba(251,191,36,.07),transparent)}
+.lane h4{font-size:18px;margin-bottom:8px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:18px 0 0}
+.tabs button{background:var(--card);border:1px solid var(--line);color:var(--mut);padding:9px 16px;border-radius:10px 10px 0 0;font-weight:600;cursor:pointer;font-size:14px;border-bottom:0}
+.tabs button.on{background:var(--card2);color:var(--gold2);border-color:rgba(242,183,5,.4)}
+.tabp{display:none;background:var(--card2);border:1px solid var(--line);border-radius:0 14px 14px 14px;padding:22px}
+.tabp.on{display:block}
+.checker{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid rgba(242,183,5,.35);border-radius:18px;padding:26px;margin:22px 0}
+.checker h4{font-size:19px;margin-bottom:4px}
+.fld{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin:18px 0}
+.fld label{font-size:12px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:6px}
+select{width:100%;background:var(--bg);color:var(--tx);border:1px solid var(--line);padding:10px 12px;border-radius:10px;font-size:14px;outline:none}
+select:focus{border-color:var(--gold)}
+.res{border-radius:14px;padding:18px 20px;border:1px solid;margin-top:6px}
+.res.A{background:rgba(52,211,153,.09);border-color:rgba(52,211,153,.5)}
+.res.M{background:rgba(251,191,36,.09);border-color:rgba(251,191,36,.5)}
+.res.X{background:rgba(248,113,113,.09);border-color:rgba(248,113,113,.5)}
+.res b{font-size:18px;display:block;margin-bottom:6px}.res ul{margin:8px 0 0 20px;font-size:14.5px;color:var(--mut)}
+.ck{list-style:none;margin:0}.ck li{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border:1px solid var(--line);border-radius:10px;background:var(--card);margin-bottom:8px;cursor:pointer;user-select:none}
+.ck li input{margin-top:5px;accent-color:var(--gold);width:17px;height:17px}
+.ck li.d{opacity:.55;text-decoration:line-through}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+.faq summary{padding:15px 18px;cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";color:var(--gold2);font-size:20px;line-height:1}
+.faq details[open] summary:after{content:"−"}
+.faq details>div{padding:0 18px 16px;color:var(--mut);font-size:15px}
+.hide{display:none!important}
+.mock{background:var(--bg);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:18px 0;font-size:13px}
+.mock .top{display:flex;gap:6px;padding:10px 14px;background:var(--card2);border-bottom:1px solid var(--line);align-items:center}
+.mock .top i{width:10px;height:10px;border-radius:50%;background:var(--line)}.mock .top span{margin-left:10px;color:var(--mut);font-size:12px}
+.mock .body{display:grid;grid-template-columns:150px 1fr;min-height:150px}
+.mock .sb{background:#161922;padding:12px;color:#aab;font-size:12px;display:flex;flex-direction:column;gap:4px}
+.mock .sb span{padding:4px 8px;border-radius:6px}.mock .sb span.a{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 3px 0 0 #f2b705}
+.mock .ct{padding:14px;display:flex;flex-direction:column;gap:8px}
+.mock .row{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);padding:8px 12px;border-radius:8px}
+footer{padding:50px 0 70px;color:var(--mut);font-size:14px;text-align:center;border-top:1px solid var(--line)}
+.burger{display:none}
+#top{position:fixed;right:22px;bottom:22px;width:44px;height:44px;border-radius:50%;border:0;background:var(--gold);color:#14100a;font-size:20px;font-weight:800;cursor:pointer;box-shadow:var(--sh);opacity:0;pointer-events:none;transition:.2s}
+#top.v{opacity:1;pointer-events:auto}
+@media(max-width:980px){
+  aside{position:fixed;left:0;top:0;z-index:90;transform:translateX(-100%);transition:.25s;width:290px}
+  aside.open{transform:none;box-shadow:var(--sh)}
+  .burger{display:grid;position:fixed;top:14px;left:14px;z-index:95;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--tx);place-items:center;font-size:20px;cursor:pointer}
+  .wrap{padding:0 20px}.hero{padding-top:90px}
+  .stats,.g3{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){.g2,.g3,.lanes,.stats{grid-template-columns:1fr}.mock .body{grid-template-columns:1fr}.mock .sb{display:none}}
+@media print{
+  aside,.burger,#top,#bar,.side-foot,.tabs,.checker .fld{display:none!important}
+  :root{--bg:#fff;--bg2:#fff;--card:#fff;--card2:#f5f5f5;--tx:#111;--mut:#444;--line:#ccc;--gold2:#8a6200;--sh:none}
+  body{background:#fff}section{break-inside:avoid-page;padding-top:30px}.tabp{display:block!important}.card,.note,table{break-inside:avoid}
+  .hero{background:none}
+}
+</style>
+</head>
+<body>
+<div id="bar"></div>
+<button class="burger" id="burger" aria-label="Menu">☰</button>
+<div class="layout">
+<aside id="side">
+  <div class="brand"><div class="logo">W</div><div><b>What Else</b><small>Campaign Control · Guide officiel</small></div></div>
+  <div class="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="q" type="search" placeholder="Rechercher dans le guide…" autocomplete="off"></div>
+  <nav id="nav"></nav>
+  <div class="side-foot"><button class="btn" id="theme">◐ Thème</button><button class="btn" onclick="window.print()">⎙ PDF</button></div>
+</aside>
+
+<main>
+<header class="hero"><div class="wrap">
+  <span class="tag">Guide officiel · Version client</span>
+  <h1>Pilotez toute votre campagne <em>What Else</em> depuis un seul endroit.</h1>
+  <p>Planifier, rédiger, valider, publier sur Facebook et Instagram, suivre les commentaires et mesurer les résultats. Ce guide vous accompagne pas à pas, écran par écran, et explique précisément ce qui est automatique et ce qui reste sous votre contrôle.</p>
+  <a class="btn gold" href="#demarrage" style="display:inline-flex;flex:none">Commencer →</a>
+  <a class="btn" href="#auto-manuel" style="display:inline-flex;flex:none;margin-left:8px">Auto ou manuel ?</a>
+  <div class="stats">
+    <div class="stat"><b>2</b><span>plateformes publiées automatiquement (Facebook, Instagram)</span></div>
+    <div class="stat"><b>100%</b><span>des publications validées par un humain</span></div>
+    <div class="stat"><b>3</b><span>rôles : Éditeur, Validateur, Administrateur</span></div>
+    <div class="stat"><b>1&nbsp;clic</b><span>pour tout arrêter : Pause d'urgence</span></div>
+  </div>
+</div></header>
+
+<div class="wrap">
+
+<section id="apercu" data-t="Aperçu de la plateforme">
+  <span class="kick">01 · Vue d'ensemble</span>
+  <h2>Ce que fait la plateforme</h2>
+  <p class="lead">What Else — Campaign Control est un centre de commande pour la campagne de sortie en salle de <b>What Else</b> (Easy Distribution). Il remplace les tableurs, les messages dispersés et les publications faites « à la main » par un flux unique, traçable et sécurisé.</p>
+  <div class="grid g3">
+    <div class="card"><div class="ico">🗓</div><h4>Planning &amp; calendrier</h4><p>Importez votre plan (PDF, Word, PowerPoint, Excel, CSV), vérifiez-le ligne par ligne, puis retrouvez chaque action dans un calendrier clair.</p></div>
+    <div class="card"><div class="ico">✍️</div><h4>Contenus &amp; légendes IA</h4><p>Créez vos posts, associez les médias, générez des légendes en darija, français ou mixte, et validez-les avant envoi.</p></div>
+    <div class="card"><div class="ico">✅</div><h4>Validation obligatoire</h4><p>Rien n'est publié sans l'accord d'un Validateur. Cette règle est verrouillée : personne ne peut la désactiver.</p></div>
+    <div class="card"><div class="ico">🚀</div><h4>Publication Facebook &amp; Instagram</h4><p>Programmation à la minute près (heure de Tunis), ou « Publier maintenant », avec historique de chaque tentative.</p></div>
+    <div class="card"><div class="ico">💬</div><h4>Commentaires</h4><p>Premier commentaire (hashtags), réponses assistées par IA et modération (mots interdits, liens). Tout est désactivé par défaut.</p></div>
+    <div class="card"><div class="ico">📈</div><h4>Analytics</h4><p>Portée, vues, interactions, meilleurs créneaux, export Excel/PDF, saisie manuelle pour TikTok.</p></div>
+    <div class="card"><div class="ico">🎞</div><h4>Médiathèque</h4><p>Envoi de gros fichiers vidéo, contrôle automatique de compatibilité Instagram/Facebook avant même la validation.</p></div>
+    <div class="card"><div class="ico">🛡</div><h4>Administration</h4><p>Un centre de contrôle pour activer/désactiver chaque fonction, par campagne, plateforme ou compte, avec historique.</p></div>
+    <div class="card"><div class="ico">🎵</div><h4>TikTok guidé</h4><p>TikTok est traité en publication manuelle assistée : légende prête à copier, média à télécharger, confirmation en un clic.</p></div>
+  </div>
+</section>
+
+<section id="demarrage" data-t="Démarrage rapide connexion premiers pas">
+  <span class="kick">02 · Démarrage</span>
+  <h2>Vos 10 premières minutes</h2>
+  <ol class="steps">
+    <li><b>Connectez-vous</b>Ouvrez l'adresse de la plateforme et saisissez l'e-mail et le mot de passe fournis. La session reste ouverte 12 heures. Après 8 tentatives ratées en une minute, la connexion est temporairement bloquée (protection anti-piratage).</li>
+    <li><b>Repérez le menu à gauche</b>Onze rubriques (voir la section « Navigation »). En haut, le compte à rebours <span class="pill p-y">J-X</span> indique le nombre de jours avant la sortie en salle.</li>
+    <li><b>Connectez les comptes sociaux</b>Rubrique <span class="path">Comptes</span> : jeton Meta pour Facebook + Instagram. Sans compte connecté, tout passe en publication manuelle.</li>
+    <li><b>Importez le planning</b>Rubrique <span class="path">Planning</span> : déposez le document, vérifiez, validez. Les brouillons se créent automatiquement.</li>
+    <li><b>Ajoutez les médias</b>Rubrique <span class="path">Médias</span> : photos JPEG, vidéos MP4 verticales.</li>
+    <li><b>Complétez, soumettez, validez</b>Rubrique <span class="path">Contenu</span> puis fiche du post : légende, média, heure, mode. Un Éditeur soumet, un Validateur approuve.</li>
+  </ol>
+  <div class="note tip"><b>💡</b><div><p><b>Conseil.</b> Pour votre tout premier test, créez un post d'essai sur une Page de test, en mode <b>manuel</b>, puis en mode <b>auto</b> avec « Publier maintenant ». Supprimez-le ensuite sur la plateforme.</p></div></div>
+</section>
+
+<section id="roles" data-t="Rôles permissions éditeur validateur administrateur">
+  <span class="kick">03 · Accès</span>
+  <h2>Rôles et permissions</h2>
+  <p class="lead">Chaque personne a un rôle. Le rôle supérieur inclut toujours les droits du rôle inférieur.</p>
+  <div class="tbl"><table>
+    <tr><th>Action</th><th>Éditeur</th><th>Validateur</th><th>Admin</th></tr>
+    <tr><td>Créer / modifier un contenu ou un post</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Soumettre pour validation</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Téléverser des médias, générer des légendes IA</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Confirmer une publication manuelle, saisir des chiffres</td><td class="y">✓</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Approuver / rejeter un post ou une légende IA</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Publier maintenant, replanifier, retirer du planning, annuler</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Activer/couper l'auto-publication de la campagne, mettre en pause</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Valider un planning importé, synchroniser les analytics</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Connecter / déconnecter un compte social</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+    <tr><td>Vérifier un compte social (test des droits)</td><td class="n">—</td><td class="y">✓</td><td class="y">✓</td></tr>
+    <tr><td>Gérer l'équipe, l'Administration, les réglages de commentaires</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+    <tr><td>Reprendre l'automatisation après une pause d'urgence</td><td class="n">—</td><td class="n">—</td><td class="y">✓</td></tr>
+  </table></div>
+  <div class="note ok"><b>🔐</b><div><p>Les jetons des comptes sociaux sont <b>chiffrés</b> en base de données. Toute action sensible est enregistrée dans un journal d'audit (qui, quand, quoi).</p></div></div>
+</section>
+
+<section id="navigation" data-t="Navigation menu rubriques">
+  <span class="kick">04 · Navigation</span>
+  <h2>Les rubriques du menu</h2>
+  <div class="mock"><div class="top"><i></i><i></i><i></i><span>Plateforme What Else</span></div><div class="body">
+    <div class="sb"><span class="a">Tableau de bord</span><span>Calendrier</span><span>Planning</span><span>Contenu</span><span>Publication</span><span>Commentaires</span><span>Analytics</span><span>Médias</span><span>Comptes</span><span>Équipe</span><span>Administration</span></div>
+    <div class="ct"><div class="row"><b>À traiter maintenant</b><span class="pill p-y">3</span></div><div class="row"><b>En attente de validation</b><span class="pill p-b">5</span></div><div class="row"><b>Prochaines publications</b><span class="pill p-g">12</span></div></div>
+  </div></div>
+  <div class="tbl"><table>
+    <tr><th>Rubrique</th><th>À quoi ça sert</th><th>Accès</th></tr>
+    <tr><td><b>Tableau de bord</b></td><td>Ce qui demande votre attention, les posts en attente, les prochaines publications, l'état de la pause.</td><td>Tous</td></tr>
+    <tr><td><b>Calendrier</b></td><td>Vue mensuelle/hebdomadaire des actions planifiées et des posts programmés.</td><td>Tous</td></tr>
+    <tr><td><b>Planning</b></td><td>Import et vérification des plans de campagne, suivi de l'avancement des actions.</td><td>Tous</td></tr>
+    <tr><td><b>Contenu</b></td><td>Création des contenus (un contenu = un post par plateforme).</td><td>Tous</td></tr>
+    <tr><td><b>Publication</b></td><td>Centre de contrôle : auto-publication, pause, file d'attente, « À publier à la main », historique.</td><td>Tous (actions : Validateur)</td></tr>
+    <tr><td><b>Commentaires</b></td><td>Premiers commentaires, réponses IA, modération.</td><td>Validateur+</td></tr>
+    <tr><td><b>Analytics</b></td><td>Performances, meilleurs créneaux, exports.</td><td>Tous</td></tr>
+    <tr><td><b>Médias</b></td><td>Médiathèque et envoi de fichiers.</td><td>Tous</td></tr>
+    <tr><td><b>Comptes</b></td><td>Connexion et vérification de Facebook, Instagram, TikTok.</td><td>Tous (connexion : Admin)</td></tr>
+    <tr><td><b>Équipe</b></td><td>Créer des utilisateurs, activer/désactiver des accès.</td><td>Admin</td></tr>
+    <tr><td><b>Administration</b></td><td>Centre de contrôle des fonctions, historique des changements.</td><td>Admin</td></tr>
+  </table></div>
+</section>
+
+<section id="comptes" data-t="Comptes connexion Facebook Instagram Meta TikTok jeton">
+  <span class="kick">05 · Mise en route</span>
+  <h2>Connecter Facebook, Instagram et TikTok</h2>
+  <p class="lead">Une seule opération (réservée à l'administrateur) connecte la Page Facebook et le compte Instagram Pro liés.</p>
+  <h3>Prérequis côté Meta</h3>
+  <ul>
+    <li>L'administrateur de la Page vous donne accès dans <b>Meta Business Suite</b>.</li>
+    <li>Le compte Instagram est de type <b>Professionnel</b> (Business ou Creator) et <b>lié à la Page</b>.</li>
+    <li>Une application Meta existe, et vous y avez un rôle (développeur/testeur).</li>
+  </ul>
+  <h3>Procédure</h3>
+  <ol class="steps">
+    <li><b>Générez un jeton utilisateur</b>Dans l'outil « Graph API Explorer » de Meta, cochez <b>toutes</b> ces autorisations :<br><code>pages_show_list</code> <code>pages_read_engagement</code> <code>pages_manage_posts</code> <code>instagram_basic</code> <code>instagram_content_publish</code> <code>instagram_manage_insights</code></li>
+    <li><b>Collez-le dans la plateforme</b><span class="path">Comptes</span> → « Connecter Facebook + Instagram ». Si le jeton donne accès à plusieurs Pages, indiquez l'ID de la Page voulue.</li>
+    <li><b>Cliquez sur Connecter, puis Vérifier</b>La plateforme échange votre jeton contre des jetons de Page chiffrés (le jeton collé n'est pas conservé) et teste réellement les droits de publication et de lecture des statistiques.</li>
+    <li><b>Contrôlez l'état</b>Chaque compte affiche son statut : <span class="pill p-g">Actif</span> <span class="pill p-y">Expiré</span> <span class="pill p-r">Déconnecté</span>, et ses capacités (publier, lire les insights).</li>
+  </ol>
+  <div class="note warn"><b>⚠️</b><div><p><b>Erreur la plus fréquente :</b> oublier <code>pages_manage_posts</code>. Sans elle, la lecture fonctionne mais <b>la publication Facebook échoue</b>. Utilisez toujours « Vérifier » après connexion.</p></div></div>
+  <h3>TikTok</h3>
+  <p>Le bouton « Connecter TikTok » (administrateur) relie le compte. La publication automatique TikTok n'est <b>pas</b> disponible : les posts TikTok sont toujours traités en manuel guidé (voir <a href="#manuel">Publication manuelle</a>).</p>
+</section>
+
+<section id="medias" data-t="Médias médiathèque upload vidéo image format">
+  <span class="kick">06 · Ressources</span>
+  <h2>La médiathèque</h2>
+  <p class="lead">Chaque fichier est analysé automatiquement à l'envoi (durée, dimensions, format) et reçoit un diagnostic de compatibilité par plateforme.</p>
+  <div class="grid g2">
+    <div class="card"><h4>Formats acceptés</h4><p>Images : JPG, PNG, GIF, WebP. Vidéos : MP4, MOV, WebM. Le type réel du fichier est vérifié (pas seulement l'extension).</p></div>
+    <div class="card"><h4>Gros fichiers</h4><p>Au-delà de 50 Mo, l'envoi se fait par morceaux avec reprise automatique : une coupure réseau ne vous fait pas tout recommencer. Taille maximale par défaut : 2 Go.</p></div>
+  </div>
+  <h3>Statuts d'un média</h3>
+  <p><span class="pill p-b">En traitement</span> analyse en cours — <span class="pill p-g">Prêt</span> utilisable — <span class="pill p-r">Invalide</span> refusé, remplacez-le. Un post ne peut pas être soumis tant que son média n'est pas « Prêt ».</p>
+  <h3>Règles de compatibilité (contrôlées automatiquement)</h3>
+  <div class="tbl"><table>
+    <tr><th>Cible</th><th>Règles</th></tr>
+    <tr><td><b>Instagram Reel</b></td><td>Vidéo ≤ 90 s, largeur ≥ 500 px. Recommandé : MP4 (H.264 + AAC), vertical 9:16.</td></tr>
+    <tr><td><b>Instagram Story</b></td><td>Vidéo ≤ 60 s.</td></tr>
+    <tr><td><b>Instagram photo (feed)</b></td><td>JPEG obligatoire, ratio entre 4:5 et 1,91:1, largeur ≥ 320 px (au-delà de 1440 px, Instagram peut réduire l'image).</td></tr>
+    <tr><td><b>Facebook vidéo</b></td><td>Jusqu'à 4 h, largeur ≥ 120 px.</td></tr>
+    <tr><td><b>Facebook Reel</b></td><td>Vidéo ≤ 90 s.</td></tr>
+    <tr><td><b>Facebook photo</b></td><td>Largeur ≥ 200 px.</td></tr>
+  </table></div>
+  <div class="note tip"><b>💡</b><div><p>Les médias doivent être accessibles publiquement par Meta pour être publiés : ils sont servis par des liens aux noms impossibles à deviner. Vous pouvez aussi importer un média depuis une adresse (URL) ; les liens non sûrs sont refusés.</p></div></div>
+</section>
+
+<section id="planning" data-t="Planning import PDF Word PowerPoint Excel vérification extraction">
+  <span class="kick">07 · Préparation</span>
+  <h2>Importer et vérifier le planning</h2>
+  <p class="lead">Déposez votre plan de campagne tel quel. L'IA le lit et propose des lignes ; <b>vous gardez la main</b> : rien n'est créé tant que vous n'avez pas vérifié et validé.</p>
+  <div class="flow"><span class="s">1. Dépôt du fichier</span><span class="a">→</span><span class="s">2. Extraction IA</span><span class="a">→</span><span class="s hl">3. Vérification ligne par ligne</span><span class="a">→</span><span class="s hu">4. Validation</span><span class="a">→</span><span class="s">5. Calendrier + brouillons</span></div>
+  <ol class="steps">
+    <li><b>Déposez le document</b><span class="path">Planning</span> → Importer. Formats : PDF, Word (.docx), PowerPoint (.pptx), Excel (.xlsx) et CSV. Un fichier déjà envoyé est détecté pour éviter les doublons.</li>
+    <li><b>Comparez avec l'original</b>Pour chaque ligne extraite, la plateforme conserve la référence (« Page 2 », « Slide 4 ») et le texte d'origine, pour une vérification côte à côte. Un indice de confiance est affiché.</li>
+    <li><b>Corrigez</b>Modifiez la date, l'heure, les plateformes, le format, le texte exact de la légende. Ajoutez ou supprimez des lignes. Vous pouvez « réinitialiser » une ligne pour revenir à l'extraction d'origine. Une ligne sans date exploitable doit être complétée.</li>
+    <li><b>Vérifiez tout</b>Marquez les lignes comme vérifiées (« Tout vérifier » une fois contrôlé). Les erreurs bloquent, les avertissements (média manquant, légende absente…) informent.</li>
+    <li><b>Validez (Validateur)</b>Le planning devient des <b>entrées de calendrier</b> et, pour les actions de type « Post », des <b>brouillons</b> (jamais publiés sans approbation).</li>
+  </ol>
+  <h3>Types d'actions reconnus</h3>
+  <p><span class="pill p-b">Post</span> <span class="pill p-n">Commentaire</span> <span class="pill p-n">Engagement</span> <span class="pill p-n">Sponsoring</span> <span class="pill p-n">Préparation</span> <span class="pill p-n">Reporting</span> <span class="pill p-n">Autre</span></p>
+  <p>Seules les actions « Post » deviennent des brouillons. Les autres sont des <b>tâches</b> à suivre : <span class="pill p-n">En attente</span> <span class="pill p-g">Fait</span> <span class="pill p-y">Ignoré</span> <span class="pill p-r">Bloqué</span>, avec une note.</p>
+  <div class="note warn"><b>⚠️</b><div><p>L'extraction par IA peut se tromper (dates, noms). C'est pour cela que la vérification est <b>obligatoire et non désactivable</b>. Relisez les textes en darija avec un locuteur natif avant publication.</p></div></div>
+</section>
+
+<section id="contenu" data-t="Contenu post créer légende hashtags soumettre brouillon">
+  <span class="kick">08 · Création</span>
+  <h2>Créer un contenu et ses posts</h2>
+  <p class="lead">Un <b>contenu</b> est l'idée de départ (titre, légende de base, hashtags, médias). Il génère <b>un post par plateforme</b> : si Facebook réussit et qu'Instagram échoue, le contenu n'est jamais perdu.</p>
+  <ol class="steps">
+    <li><b>Nouveau contenu</b><span class="path">Contenu</span> → « + Nouveau contenu ». Donnez un titre, choisissez la langue de la légende (Darija, Français, Darija + Français).</li>
+    <li><b>Générer les posts</b>Le bouton « Générer les posts » crée un brouillon Facebook et/ou Instagram avec légende et média.</li>
+    <li><b>Ouvrez la fiche du post</b>Complétez : <b>Publication (heure de Tunis)</b>, <b>Mode de publication</b> (Auto ou Manuel), le compte, le média, la légende, les hashtags (sans #, séparés par un espace).</li>
+    <li><b>Soumettez pour validation</b>Le bouton « Soumettre pour validation » lance les contrôles (voir ci-dessous). Le post passe « En attente d'un validateur ».</li>
+  </ol>
+  <h3>Ce qui bloque la soumission</h3>
+  <ul>
+    <li>Légende vide, ou contenant encore un <code>[PLACEHOLDER]</code> à remplir (lieu, heure, lien…).</li>
+    <li>Instagram : légende &gt; 2 200 caractères, ou plus de 30 hashtags.</li>
+    <li>Pas de média alors que le format en exige un ; vidéo exigée pour Vidéo/Reel ; image exigée pour Image ; média encore en traitement ou invalide.</li>
+    <li>Post « Texte seul » sur Instagram (le texte seul n'existe que sur Facebook).</li>
+    <li>Légende IA non approuvée, ou modifiée depuis son approbation.</li>
+  </ul>
+  <div class="note warn"><b>✏️</b><div><p><b>Toute modification d'un post remet le post en brouillon.</b> C'est voulu : ce qui est publié est toujours exactement ce qui a été validé.</p></div></div>
+  <h3>Formats disponibles</h3>
+  <div class="tbl"><table>
+    <tr><th>Format</th><th>Facebook</th><th>Instagram</th><th>TikTok</th></tr>
+    <tr><td>Image</td><td class="y">Auto</td><td class="y">Auto</td><td class="m">Manuel</td></tr>
+    <tr><td>Vidéo</td><td class="y">Auto</td><td class="y">Auto</td><td class="m">Manuel</td></tr>
+    <tr><td>Reel</td><td class="y">Auto <small>(publié comme vidéo de Page)</small></td><td class="y">Auto</td><td class="m">Manuel</td></tr>
+    <tr><td>Story</td><td class="m">Manuel</td><td class="y">Auto</td><td class="m">Manuel</td></tr>
+    <tr><td>Texte seul</td><td class="y">Auto</td><td class="n">Impossible</td><td class="n">Impossible</td></tr>
+  </table></div>
+  <h3>Hashtags</h3>
+  <p>Le bouton « 🏷 Suggérer » propose des hashtags classés. Une bibliothèque centrale évite les doublons et permet de <b>bloquer</b> un hashtag. Les hashtags ajoutés à la main restent toujours possibles.</p>
+</section>
+
+<section id="ia" data-t="Assistant légendes IA Caption Studio darija français tendances apprentissage">
+  <span class="kick">09 · Intelligence artificielle</span>
+  <h2>L'assistant de légendes (Caption Studio)</h2>
+  <p class="lead">L'IA propose, <b>vous décidez</b>. Aucune légende IA ne peut partir sans avoir été relue et approuvée par un humain.</p>
+  <ol class="steps">
+    <li><b>Ouvrez « Assistant légendes (IA) »</b> dans la fiche d'un post.</li>
+    <li><b>Choisissez la langue et la consigne</b>Darija, Français ou Darija + Français. Consigne facultative : « ton drôle, mentionner le compte à rebours ».</li>
+    <li><b>« Proposer 3 légendes »</b>Trois variantes sont générées. L'IA ne connaît que les faits de la <b>fiche campagne</b> (lieu, horaires, comptes…) : plus elle est complète, plus les textes sont justes.</li>
+    <li><b>Relisez, modifiez, approuvez</b>Un Validateur approuve une version précise. Si le texte est modifié ensuite, l'approbation tombe et il faut réapprouver.</li>
+    <li><b>Appliquez au post</b>La légende et les hashtags sont copiés dans le post. Notez les suggestions (1 à 5 étoiles) : cela améliore les générations suivantes.</li>
+  </ol>
+  <div class="grid g2">
+    <div class="card"><h4>Garde-fous intégrés</h4><p>Détection des [PLACEHOLDERS], limites de caractères et de hashtags, avertissements affichés sur chaque suggestion. Les suggestions rejetées ne sont jamais réutilisées.</p></div>
+    <div class="card"><h4>Fonctions optionnelles (Administration)</h4><p><b>Apprentissage par feedback</b> (désactivé par défaut), <b>classement par performance</b> des hashtags, <b>tendances vérifiées</b> (saisies ou importées, avec date d'expiration — jamais inventées).</p></div>
+  </div>
+</section>
+
+<section id="cycle" data-t="Cycle de vie statuts workflow validation approbation">
+  <span class="kick">10 · Le parcours d'un post</span>
+  <h2>Cycle de vie d'un post</h2>
+  <p class="lead">Deux circuits distincts : la <b>validation</b> (humaine) et l'<b>exécution</b> (publication). Ils ne se mélangent jamais.</p>
+  <h3>Circuit de validation</h3>
+  <div class="flow"><span class="s">Brouillon</span><span class="a">→</span><span class="s">En attente de validation</span><span class="a">→</span><span class="s hu">Approuvé</span><span class="a">ou</span><span class="s" style="border-color:var(--bad);color:var(--bad)">Rejeté</span></div>
+  <h3>Circuit d'exécution</h3>
+  <div class="flow"><span class="s">Non programmé</span><span class="a">→</span><span class="s">Programmé</span><span class="a">→</span><span class="s">En file</span><span class="a">→</span><span class="s hl">Publication en cours</span><span class="a">→</span><span class="s hu">Publié</span></div>
+  <div class="tbl"><table>
+    <tr><th>Statut</th><th>Signification</th><th>Que faire ?</th></tr>
+    <tr><td><span class="pill p-n">Brouillon</span></td><td>En préparation ou modifié depuis la dernière validation.</td><td>Compléter puis soumettre.</td></tr>
+    <tr><td><span class="pill p-b">En attente</span></td><td>Un Validateur doit décider.</td><td>Approuver ou rejeter (avec motif).</td></tr>
+    <tr><td><span class="pill p-g">Programmé</span></td><td>Approuvé, en attente de son heure.</td><td>Rien : le planificateur s'en charge (en mode Auto).</td></tr>
+    <tr><td><span class="pill p-b">En file / En cours</span></td><td>Envoi à la plateforme.</td><td>Patienter.</td></tr>
+    <tr><td><span class="pill p-g">Publié</span></td><td>En ligne ; lien vers le post disponible.</td><td>Suivre les chiffres.</td></tr>
+    <tr><td><span class="pill p-y">À publier à la main</span></td><td>Mode manuel, créneau raté, TikTok, format non automatisable ou pause.</td><td>Publier soi-même puis confirmer.</td></tr>
+    <tr><td><span class="pill p-r">Échec</span></td><td>L'envoi a échoué ou a été interrompu. <b>Jamais relancé automatiquement.</b></td><td>Lire l'erreur, corriger, replanifier.</td></tr>
+    <tr><td><span class="pill p-y">À vérifier</span></td><td>Résultat incertain (délai dépassé) : la plateforme a peut-être publié.</td><td>Vérifier sur la plateforme, puis marquer publié ou renvoyer.</td></tr>
+    <tr><td><span class="pill p-n">Annulé</span></td><td>Annulé par un Validateur.</td><td>—</td></tr>
+  </table></div>
+  <div class="note ok"><b>🧠</b><div><p><b>Pourquoi aucune relance automatique ?</b> Si une connexion coupe après l'envoi, le post est peut-être déjà en ligne. Relancer risquerait un <b>doublon public</b>. La plateforme préfère vous demander de vérifier.</p></div></div>
+</section>
+
+<section id="auto-manuel" data-t="Automatique manuel auto manuel différence conditions publication simulateur">
+  <span class="kick">11 · Le point clé</span>
+  <h2>Automatique ou manuel : ce qui part tout seul</h2>
+  <p class="lead">Un post ne part automatiquement que si <b>toutes</b> les conditions sont réunies. Si une seule manque, il bascule en « À publier à la main » : il n'est jamais perdu, ni publié par surprise.</p>
+  <div class="lanes">
+    <div class="lane auto"><h4>🟢 Publication automatique</h4><p style="color:var(--mut);font-size:14.5px">Les 9 conditions :</p><ol style="font-size:14.5px">
+      <li>Le post est <b>approuvé</b> par un Validateur</li>
+      <li>Son mode est <b>Auto</b> (le défaut est Manuel)</li>
+      <li>Une <b>heure</b> est programmée et elle est arrivée</li>
+      <li>L'<b>auto-publication de la campagne</b> est activée (désactivée par défaut)</li>
+      <li>La campagne n'est <b>pas en pause</b></li>
+      <li>Un <b>compte connecté</b> est associé au post</li>
+      <li>Le format est <b>automatisable</b> (pas TikTok, pas Story Facebook)</li>
+      <li>Les fonctions « Publication programmée » et « Publication automatique » sont actives (Administration)</li>
+      <li>La <b>Pause d'urgence</b> n'est pas active</li>
+    </ol></div>
+    <div class="lane man"><h4>🟡 Publication manuelle</h4><p style="color:var(--mut);font-size:14.5px">À l'heure prévue, le post apparaît dans « À publier à la main » quand :</p><ul style="font-size:14.5px">
+      <li>son mode est <b>Manuel</b></li>
+      <li>c'est un post <b>TikTok</b></li>
+      <li>le format n'est pas automatisable</li>
+      <li>aucun compte n'est connecté</li>
+      <li>l'auto-publication est désactivée ou la campagne en pause</li>
+      <li>le créneau a été <b>raté de plus de 30 minutes</b> (plateforme arrêtée, pause…) : jamais publié en retard automatiquement</li>
+    </ul></div>
+  </div>
+  <div class="checker">
+    <h4>🧪 Simulateur : mon post partira-t-il tout seul ?</h4>
+    <p style="color:var(--mut);font-size:14.5px;margin-bottom:0">Choisissez la situation, la réponse s'affiche immédiatement.</p>
+    <div class="fld">
+      <div><label>Plateforme</label><select id="c-pl"><option value="FACEBOOK">Facebook</option><option value="INSTAGRAM">Instagram</option><option value="TIKTOK">TikTok</option></select></div>
+      <div><label>Format</label><select id="c-fm"><option value="IMAGE">Image</option><option value="VIDEO">Vidéo</option><option value="REEL" selected>Reel</option><option value="STORY">Story</option><option value="TEXT">Texte seul</option></select></div>
+      <div><label>Mode du post</label><select id="c-md"><option value="AUTO">Auto</option><option value="MANUAL">Manuel</option></select></div>
+      <div><label>Validation</label><select id="c-ap"><option value="Y">Approuvé</option><option value="N">Non approuvé</option></select></div>
+      <div><label>Auto-publication campagne</label><select id="c-ca"><option value="Y">Activée</option><option value="N">Désactivée</option></select></div>
+      <div><label>Pause / Pause d'urgence</label><select id="c-pa"><option value="N">Non</option><option value="Y">Active</option></select></div>
+      <div><label>Compte connecté</label><select id="c-ac"><option value="Y">Oui</option><option value="N">Non</option></select></div>
+      <div><label>Retard au moment de l'heure</label><select id="c-lt"><option value="N">À l'heure</option><option value="Y">&gt; 30 minutes</option></select></div>
+    </div>
+    <div id="c-out" class="res A"></div>
+  </div>
+  <h3>Trois cas concrets</h3>
+  <div class="grid g3">
+    <div class="card"><h4>Reel Instagram, Auto, tout activé</h4><p>Approuvé à 10 h pour 19 h → le planificateur le met en file à 19 h 00 et le publie. Vous recevez le lien dans l'historique.</p></div>
+    <div class="card"><h4>Même post, plateforme en pause</h4><p>À 19 h il apparaît « À publier à la main » avec la raison. Reprenez la publication ou publiez à la main.</p></div>
+    <div class="card"><h4>Vidéo TikTok</h4><p>Toujours manuel : légende à copier, vidéo à télécharger, puis « Le post est en ligne : marquer publié ».</p></div>
+  </div>
+</section>
+
+<section id="publication" data-t="Publication programmer publier maintenant replanifier file attente historique">
+  <span class="kick">12 · Publier</span>
+  <h2>Programmer et publier (pas à pas)</h2>
+  <div class="tabs" data-tabs>
+    <button class="on">Programmer</button><button>Publier maintenant</button><button>Modifier / retirer</button>
+  </div>
+  <div class="tabp on"><ol class="steps">
+    <li><b>Éditeur : préparez la fiche</b>Heure de publication (fuseau Tunis), mode <b>Auto</b>, compte, média, légende. Cliquez sur « Soumettre pour validation ».</li>
+    <li><b>Validateur : « Approuver et programmer »</b>Le post passe « Programmé ». Le planificateur vérifie les posts dus <b>toutes les minutes</b>.</li>
+    <li><b>À l'heure</b>Si les 9 conditions sont réunies, le post est mis en file puis publié. Le lien du post publié est enregistré.</li>
+    <li><b>Contrôle</b><span class="path">Publication</span> → « Historique récent » : chaque tentative est consignée avec son résultat.</li>
+  </ol></div>
+  <div class="tabp"><ol class="steps">
+    <li><b>Ouvrez un post approuvé</b>Seul un Validateur peut le faire.</li>
+    <li><b>« Publier maintenant »</b>Une autorisation unique est enregistrée (audit) et l'envoi est lancé immédiatement, hors planning.</li>
+    <li><b>Suivez</b>Le statut passe « En file » puis « Publié ». Cette action est bloquée par la pause et la Pause d'urgence.</li>
+  </ol></div>
+  <div class="tabp"><ul>
+    <li><b>Replanifier</b> : « Replanifier à l'heure choisie » (Validateur).</li>
+    <li><b>Retirer du planning</b> : le post redevient non programmé sans être supprimé.</li>
+    <li><b>Annuler le post</b> : arrête définitivement ce post.</li>
+    <li><b>Modifier</b> : possible, mais le post repasse en brouillon et doit être revalidé.</li>
+  </ul></div>
+  <h3>L'écran « Publication »</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Contrôles de la campagne</h4><p>Interrupteurs <b>Auto-publication</b> et <b>Campagne en pause</b>. Un seul clic suffit à stopper les envois de la campagne.</p></div>
+    <div class="card"><h4>À vérifier sur la plateforme</h4><p>Posts au résultat incertain. Vérifiez sur Facebook/Instagram avant toute action.</p></div>
+    <div class="card"><h4>À publier à la main</h4><p>Tout ce qui attend une action humaine, avec la raison.</p></div>
+    <div class="card"><h4>File d'attente &amp; historique</h4><p>Ce qui va partir, ce qui est parti, avec un lien « Voir le post ».</p></div>
+  </div>
+</section>
+
+<section id="manuel" data-t="Publication manuelle TikTok à publier à la main confirmer">
+  <span class="kick">13 · Mode manuel</span>
+  <h2>Publier à la main, sans rien perdre</h2>
+  <p class="lead">La plateforme prépare tout ; vous publiez sur l'application, puis vous confirmez pour garder l'historique et les statistiques à jour.</p>
+  <ol class="steps">
+    <li><b>Ouvrez le post « À publier à la main »</b>Depuis <span class="path">Publication</span>, le tableau de bord ou le calendrier.</li>
+    <li><b>Copiez la légende</b>Bouton « Copier la légende » (texte + hashtags prêts à coller).</li>
+    <li><b>Téléchargez le média</b>Bouton « Télécharger le média ».</li>
+    <li><b>Publiez sur la plateforme</b> (application ou site), avec le compte officiel.</li>
+    <li><b>Confirmez</b>« Le post est en ligne : marquer publié » et collez l'adresse du post si vous l'avez. Tout Éditeur peut confirmer.</li>
+    <li><b>Saisissez les chiffres</b> (TikTok notamment) : « Saisir les chiffres à la main ». Laissez vide ce que vous ne connaissez pas : ce sera « indisponible », <b>pas 0</b>.</li>
+  </ol>
+</section>
+
+<section id="calendrier" data-t="Calendrier vue planning dates">
+  <span class="kick">14 · Visualiser</span>
+  <h2>Le calendrier</h2>
+  <p>Il rassemble les <b>actions du planning</b> et les <b>posts programmés</b> de la campagne. Cliquez sur une entrée pour ouvrir sa fiche, y modifier l'heure ou la statuer. Plusieurs actions le même jour sont possibles (teaser le matin, Reel l'après-midi, affiche le soir). Un décompte <span class="pill p-y">J-X</span> / <span class="pill p-g">Jour J</span> / <span class="pill p-n">J+X</span> rappelle où vous en êtes par rapport à la sortie.</p>
+  <div class="note tip"><b>💡</b><div><p>Les heures sont toujours affichées et saisies en <b>heure de Tunis</b> (Africa/Tunis), quel que soit l'endroit où vous vous trouvez.</p></div></div>
+</section>
+
+<section id="commentaires" data-t="Commentaires premier commentaire réponses modération IA">
+  <span class="kick">15 · Communauté</span>
+  <h2>Gérer les commentaires</h2>
+  <p class="lead">Trois automatisations, toutes <b>désactivées par défaut</b>, activables séparément par l'administrateur.</p>
+  <div class="grid g3">
+    <div class="card"><div class="ico">#️⃣</div><h4>Premier commentaire</h4><p>Publie vos hashtags en premier commentaire après publication (modèle <code>{hashtags}</code>). Seuls les posts publiés <b>après</b> l'activation sont concernés.</p></div>
+    <div class="card"><div class="ico">↩️</div><h4>Réponses</h4><p><b>Assistées</b> : l'IA prépare, un Validateur approuve. <b>Automatiques</b> : seules les réponses jugées sûres partent, avec un plafond par heure (10 par défaut) et un âge maximum du commentaire (24 h).</p></div>
+    <div class="card"><div class="ico">🧹</div><h4>Modération</h4><p>Masque (réversible) ou supprime (définitif) les commentaires contenant un mot interdit, ou un lien si l'option est activée.</p></div>
+  </div>
+  <h3>Traiter la file</h3>
+  <ul>
+    <li><b>Approuver et envoyer</b> une réponse préparée (modifiable avant envoi), ou la rejeter.</li>
+    <li><b>Réessayer</b> un envoi en échec.</li>
+    <li>Résultat incertain : <b>« Vérifié : bien envoyé »</b> ou <b>« Vérifié : pas envoyé, renvoyer »</b> après contrôle sur la plateforme.</li>
+  </ul>
+  <div class="note warn"><b>⚠️</b><div><p>Aucun commentaire n'est envoyé si la campagne est en pause ou si la Pause d'urgence est active. Les réponses IA nécessitent la clé du service d'IA configurée côté serveur.</p></div></div>
+</section>
+
+<section id="analytics" data-t="Analytics statistiques meilleurs créneaux export performance import historique">
+  <span class="kick">16 · Mesurer</span>
+  <h2>Analytics et meilleurs créneaux</h2>
+  <div class="grid g2">
+    <div class="card"><h4>Collecte automatique</h4><p>Les chiffres des posts publiés (vues, portée, J'aime, commentaires, partages, enregistrements) sont récupérés auprès de Meta. Un Validateur peut forcer une synchronisation.</p></div>
+    <div class="card"><h4>Saisie et import</h4><p>Pour TikTok ou l'historique : saisie manuelle ou import CSV (« Importer l'historique », modèle fourni).</p></div>
+    <div class="card"><h4>Exports</h4><p>Export des tableaux et graphiques en <b>Excel</b> et en <b>PDF</b>, pour vos comptes rendus.</p></div>
+    <div class="card"><h4>Meilleurs créneaux</h4><p>Suggestion des meilleures plages horaires. Elle reste marquée <span class="pill p-y">provisoire</span> (générique) tant qu'il n'y a pas <b>8 posts avec chiffres</b> par plateforme, puis se base sur vos données.</p></div>
+  </div>
+  <div class="note ok"><b>📊</b><div><p><b>Honnêteté des chiffres.</b> Quand une plateforme ne renvoie pas une mesure, elle est marquée « indisponible » et non comptée comme zéro. Vos moyennes ne sont donc jamais faussées.</p></div></div>
+</section>
+
+<section id="admin" data-t="Administration fonctions pause urgence contrôle équipe utilisateurs">
+  <span class="kick">17 · Contrôle</span>
+  <h2>Administration et Pause d'urgence</h2>
+  <h3>🛑 Les deux freins</h3>
+  <div class="grid g2">
+    <div class="card"><h4>Pause de la campagne</h4><p>Bouton rouge en haut de l'écran (ou interrupteur dans <i>Publication</i>). Stoppe immédiatement les publications automatiques. Réversible par un Validateur.</p></div>
+    <div class="card"><h4>Pause d'urgence</h4><p>Coupe <b>toutes</b> les fonctions sensibles (publication, commentaires, collecte). N'importe quel Validateur peut l'<b>activer</b> ; seul un Administrateur peut <b>reprendre</b>.</p></div>
+  </div>
+  <h3>Centre de contrôle des fonctions</h3>
+  <p>Chaque fonction a un mode : <span class="pill p-r">OFF</span> <span class="pill p-y">REVIEW</span> (l'IA propose, l'humain valide) <span class="pill p-g">AUTO</span>. On peut régler au niveau <b>global</b>, <b>campagne</b>, <b>plateforme</b> ou <b>compte</b> : un niveau inférieur peut seulement <b>restreindre</b>, jamais élargir. Chaque changement est historisé avec son motif.</p>
+  <div class="tbl"><table>
+    <tr><th>Groupe</th><th>Fonction</th><th>Défaut</th></tr>
+    <tr><td rowspan="4">Publication</td><td>Validation humaine obligatoire <span class="pill p-n">verrouillée</span></td><td>Toujours active</td></tr>
+    <tr><td>Publication automatique</td><td>Activée</td></tr>
+    <tr><td>Publication programmée</td><td>Activée</td></tr>
+    <tr><td>Publier maintenant</td><td>Activée</td></tr>
+    <tr><td rowspan="3">Commentaires</td><td>Premier commentaire · Réponses · Modération</td><td>Désactivés</td></tr>
+    <tr><td colspan="2" style="color:var(--mut)">Les réponses acceptent OFF / REVIEW / AUTO.</td></tr>
+    <tr><td colspan="2" style="color:var(--mut)">Coupés par la Pause et la Pause d'urgence.</td></tr>
+    <tr><td rowspan="5">IA</td><td>Légendes IA · Hashtags IA</td><td>REVIEW (jamais AUTO)</td></tr>
+    <tr><td>Apprentissage par feedback</td><td>Désactivé</td></tr>
+    <tr><td>Classement par performance</td><td>Désactivé</td></tr>
+    <tr><td>Tendances vérifiées</td><td>Désactivé</td></tr>
+    <tr><td colspan="2" style="color:var(--mut)">L'IA ne peut jamais approuver son propre contenu.</td></tr>
+    <tr><td rowspan="4">Planning</td><td>Vérification éditable <span class="pill p-n">verrouillée</span></td><td>Toujours active</td></tr>
+    <tr><td>Extraction IA des documents</td><td>REVIEW</td></tr>
+    <tr><td>Synchronisation calendrier</td><td>Activée</td></tr>
+    <tr><td>Création auto. des brouillons</td><td>Activée</td></tr>
+    <tr><td rowspan="2">Médias</td><td>Téléversement</td><td>Activé</td></tr>
+    <tr><td>Traitement automatique (compatibilité)</td><td>Activé</td></tr>
+    <tr><td>Analytics</td><td>Collecte des statistiques</td><td>Activée</td></tr>
+  </table></div>
+  <h3>Équipe</h3>
+  <p><span class="path">Équipe</span> (Administrateur) : créer un utilisateur avec son rôle, désactiver ou réactiver un accès sans perdre l'historique. <span class="path">Administration → Activité</span> : journal de toutes les actions sensibles.</p>
+</section>
+
+<section id="securite" data-t="Sécurité garanties règles sauvegarde">
+  <span class="kick">18 · Confiance</span>
+  <h2>Garanties de sécurité</h2>
+  <div class="grid g2">
+    <div class="card"><h4>🔒 Validation verrouillée</h4><p>Aucune publication sans approbation humaine ; l'IA ne peut ni approuver ni publier seule.</p></div>
+    <div class="card"><h4>🕒 Jamais en retard par surprise</h4><p>Un créneau manqué de plus de 30 min n'est pas publié automatiquement : vous décidez.</p></div>
+    <div class="card"><h4>🧾 Zéro doublon</h4><p>Pas de relance automatique d'un envoi interrompu ; résultat incertain = vérification humaine.</p></div>
+    <div class="card"><h4>🗝 Jetons chiffrés</h4><p>Les accès aux réseaux sociaux sont chiffrés. Mots de passe protégés, anti-force brute sur la connexion, cookies sécurisés en HTTPS.</p></div>
+    <div class="card"><h4>📜 Journal d'audit</h4><p>Qui a approuvé, publié, modifié, quand. Historique des réglages d'administration non modifiable.</p></div>
+    <div class="card"><h4>💾 Sauvegardes</h4><p>La base de données peut être sauvegardée à tout moment ; les migrations sont appliquées automatiquement à chaque mise à jour.</p></div>
+  </div>
+</section>
+
+<section id="faq" data-t="FAQ dépannage erreur problème aide">
+  <span class="kick">19 · Aide</span>
+  <h2>Dépannage et questions fréquentes</h2>
+  <div class="faq">
+    <details><summary>Mon post est en « À publier à la main » alors qu'il est en Auto.</summary><div>Lisez la raison affichée sur le post. Causes fréquentes : auto-publication de la campagne désactivée, campagne en pause, aucun compte associé, créneau raté de plus de 30 minutes, ou format non automatisable (TikTok, Story Facebook).</div></details>
+    <details><summary>Je ne peux pas soumettre mon post.</summary><div>Les messages listent les blocages : légende vide, <code>[PLACEHOLDER]</code> restant, média absent ou pas encore « Prêt », limites Instagram (2 200 caractères, 30 hashtags), légende IA non approuvée.</div></details>
+    <details><summary>Facebook refuse de publier (erreur 190 ou 10).</summary><div>Le jeton a expiré ou il manque une autorisation. Régénérez un jeton avec <b>les six autorisations</b> (dont <code>pages_manage_posts</code>), reconnectez dans <i>Comptes</i> et cliquez sur « Vérifier ».</div></details>
+    <details><summary>Instagram répond « could not process media ».</summary><div>Utilisez un MP4 (H.264 + AAC), vertical 9:16, de moins de 90 secondes, et vérifiez que le lien du média s'ouvre en navigation privée (il doit être public). Pour une photo : JPEG, ratio entre 4:5 et 1,91:1.</div></details>
+    <details><summary>Le post est « À vérifier sur la plateforme ».</summary><div>Le résultat de l'envoi est incertain. Ouvrez la Page/le compte : si le post est en ligne, « Marquer comme publié » ; sinon replanifiez ou republiez.</div></details>
+    <details><summary>J'ai modifié un post approuvé, il a disparu du planning.</summary><div>Normal : toute modification remet en brouillon pour garantir que la version publiée est la version validée. Soumettez-le de nouveau.</div></details>
+    <details><summary>Les meilleurs créneaux sont « provisoires ».</summary><div>Il faut 8 posts avec chiffres par plateforme pour que la suggestion repose sur vos données. Importez l'historique pour accélérer.</div></details>
+    <details><summary>Les textes en darija sont-ils fiables ?</summary><div>L'IA propose, mais un locuteur natif doit relire avant approbation. Complétez la fiche campagne (lieu, horaires, comptes) pour des textes plus exacts.</div></details>
+    <details><summary>Puis-je tout arrêter en urgence ?</summary><div>Oui : bouton rouge « Pause » en haut de l'écran pour la campagne, ou Pause d'urgence pour toutes les automatisations (reprise par un Administrateur).</div></details>
+    <details><summary>Je n'arrive plus à me connecter.</summary><div>Après 8 essais ratés en une minute, patientez une minute. Sinon demandez à l'administrateur de vérifier que votre accès est actif dans <i>Équipe</i>.</div></details>
+  </div>
+</section>
+
+<section id="checklist" data-t="Check-list lancement mise en ligne">
+  <span class="kick">20 · Mise en production</span>
+  <h2>Check-list de lancement</h2>
+  <p class="lead">Cochez au fur et à mesure (votre progression est conservée sur cet appareil).</p>
+  <ul class="ck" id="ck">
+    <li><input type="checkbox"><span>Les accès Éditeurs / Validateurs sont créés et testés (<i>Équipe</i>)</span></li>
+    <li><input type="checkbox"><span>Facebook + Instagram connectés avec les 6 autorisations, « Vérifier » est au vert</span></li>
+    <li><input type="checkbox"><span>La fiche campagne est complète (lieu, horaires, cinémas, comptes, hashtag officiel, titre arabe)</span></li>
+    <li><input type="checkbox"><span>Planning importé, vérifié ligne par ligne et validé</span></li>
+    <li><input type="checkbox"><span>Médias envoyés, statut « Prêt », compatibilité contrôlée</span></li>
+    <li><input type="checkbox"><span>Légendes (darija/français) relues par un locuteur natif, aucun [PLACEHOLDER]</span></li>
+    <li><input type="checkbox"><span>Test réel : un post image et un Reel publiés sur une Page de test, puis supprimés</span></li>
+    <li><input type="checkbox"><span>Mode des posts vérifié (Auto/Manuel) et auto-publication de la campagne activée volontairement</span></li>
+    <li><input type="checkbox"><span>Commentaires : fonctions activées uniquement si nécessaires, mots interdits renseignés</span></li>
+    <li><input type="checkbox"><span>Historique importé pour les meilleurs créneaux, sauvegarde de la base planifiée</span></li>
+  </ul>
+  <h3>Glossaire</h3>
+  <div class="tbl"><table>
+    <tr><th>Terme</th><th>Sens</th></tr>
+    <tr><td>Contenu</td><td>L'idée de départ, qui génère un post par plateforme.</td></tr>
+    <tr><td>Post</td><td>La publication sur une plateforme précise.</td></tr>
+    <tr><td>Reel</td><td>Vidéo verticale courte.</td></tr>
+    <tr><td>Story</td><td>Publication éphémère (24 h).</td></tr>
+    <tr><td>Jeton (token)</td><td>Clé d'accès temporaire fournie par Meta pour publier en votre nom.</td></tr>
+    <tr><td>Insights</td><td>Statistiques officielles fournies par Meta.</td></tr>
+    <tr><td>Placeholder</td><td>Zone à compléter entre crochets, ex. [LIEU].</td></tr>
+  </table></div>
+</section>
+
+</div>
+<footer><div class="wrap"><b>What Else — Campaign Control</b> · Guide officiel d'utilisation · Easy Distribution<br>Les fonctionnalités et réglages peuvent évoluer ; ce guide décrit la version déployée.</div></footer>
+</main>
+</div>
+<button id="top" aria-label="Haut de page">↑</button>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var secs=$$('main section');
+  // Navigation générée
+  var nav=$('#nav');
+  secs.forEach(function(s,i){
+    var a=document.createElement('a');a.href='#'+s.id;
+    a.innerHTML='<i>'+String(i+1).padStart(2,'0')+'</i><span>'+s.querySelector('h2').textContent+'</span>';
+    a.dataset.id=s.id;a.dataset.t=(s.dataset.t||'')+' '+s.querySelector('h2').textContent;
+    a.addEventListener('click',function(){$('#side').classList.remove('open')});
+    nav.appendChild(a);
+  });
+  // Scrollspy + barre de progression
+  var links=$$('#nav a');
+  function spy(){
+    var y=window.scrollY+120,cur=secs[0].id;
+    secs.forEach(function(s){if(s.offsetTop<=y)cur=s.id});
+    links.forEach(function(l){l.classList.toggle('on',l.dataset.id===cur)});
+    var h=document.documentElement.scrollHeight-innerHeight;
+    $('#bar').style.width=(h>0?scrollY/h*100:0)+'%';
+    $('#top').classList.toggle('v',scrollY>600);
+  }
+  addEventListener('scroll',spy,{passive:true});spy();
+  $('#top').onclick=function(){scrollTo({top:0,behavior:'smooth'})};
+  $('#burger').onclick=function(){$('#side').classList.toggle('open')};
+  // Recherche
+  $('#q').addEventListener('input',function(e){
+    var v=e.target.value.trim().toLowerCase();
+    links.forEach(function(l){
+      var s=document.getElementById(l.dataset.id);
+      var hit=!v||l.dataset.t.toLowerCase().indexOf(v)>-1||s.textContent.toLowerCase().indexOf(v)>-1;
+      l.classList.toggle('hide',!hit);
+    });
+  });
+  $('#q').addEventListener('keydown',function(e){
+    if(e.key==='Enter'){var f=links.filter(function(l){return !l.classList.contains('hide')})[0];if(f)f.click(),location.hash=f.getAttribute('href')}
+  });
+  // Thème
+  var root=document.documentElement;
+  try{var t=localStorage.getItem('we-theme');if(t)root.dataset.theme=t;}catch(e){}
+  $('#theme').onclick=function(){
+    var n=root.dataset.theme==='light'?'dark':'light';root.dataset.theme=n;
+    try{localStorage.setItem('we-theme',n)}catch(e){}
+  };
+  // Onglets
+  $$('[data-tabs]').forEach(function(tb){
+    var btns=$$('button',tb),panes=[],n=tb.nextElementSibling;
+    while(n&&n.classList.contains('tabp')){panes.push(n);n=n.nextElementSibling}
+    btns.forEach(function(b,i){b.onclick=function(){
+      btns.forEach(function(x,j){x.classList.toggle('on',i===j);panes[j].classList.toggle('on',i===j)});
+    }});
+  });
+  // Simulateur auto / manuel
+  var ids=['pl','fm','md','ap','ca','pa','ac','lt'];
+  function sim(){
+    var v={};ids.forEach(function(k){v[k]=$('#c-'+k).value});
+    var r=[],cls='A',title='',ok=true;
+    var okFmt={FACEBOOK:['IMAGE','VIDEO','REEL','TEXT'],INSTAGRAM:['IMAGE','REEL','VIDEO','STORY'],TIKTOK:[]};
+    if(v.pl!=='FACEBOOK'&&v.fm==='TEXT'){
+      $('#c-out').className='res X';
+      $('#c-out').innerHTML='<b>⛔ Combinaison impossible</b>Le texte seul n\'existe que sur Facebook. Le post ne peut pas être soumis.';return;
+    }
+    if(v.ap==='N'){
+      $('#c-out').className='res X';
+      $('#c-out').innerHTML='<b>⛔ Rien ne part</b>Un post non approuvé n\'est jamais publié, quel que soit le mode. Faites-le approuver par un Validateur.';return;
+    }
+    if(v.pa==='Y'){ok=false;r.push('La pause est active : aucune publication automatique, tout est mis en attente ou en manuel.')}
+    if(v.md==='MANUAL'){ok=false;r.push('Le mode du post est Manuel : il vous sera présenté « À publier à la main ».')}
+    if(okFmt[v.pl].indexOf(v.fm)<0){ok=false;r.push(v.pl==='TIKTOK'?'TikTok n\'a pas de publication automatique.':'Ce format n\'est pas publié automatiquement sur cette plateforme (Story Facebook).')}
+    if(v.ca==='N'){ok=false;r.push('L\'auto-publication de la campagne est désactivée (c\'est le réglage par défaut).')}
+    if(v.ac==='N'){ok=false;r.push('Aucun compte connecté : impossible d\'envoyer automatiquement.')}
+    if(v.lt==='Y'){ok=false;r.push('Créneau raté de plus de 30 min : jamais publié en retard automatiquement, confirmation humaine requise.')}
+    var out=$('#c-out');
+    if(ok){out.className='res A';out.innerHTML='<b>🟢 Il partira automatiquement</b>Le planificateur le publiera à l\'heure prévue. Vous le retrouverez dans l\'historique avec son lien.'}
+    else{out.className='res M';out.innerHTML='<b>🟡 Publication manuelle requise</b>Il apparaîtra « À publier à la main » à l\'heure prévue, pour la/les raison(s) suivante(s) :<ul>'+r.map(function(x){return '<li>'+x+'</li>'}).join('')+'</ul>'}
+  }
+  ids.forEach(function(k){$('#c-'+k).addEventListener('change',sim)});sim();
+  // Check-list persistante
+  var key='we-ck',saved=[];
+  try{saved=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
+  $$('#ck li').forEach(function(li,i){
+    var c=$('input',li);c.checked=!!saved[i];li.classList.toggle('d',c.checked);
+    li.addEventListener('click',function(e){if(e.target!==c)c.checked=!c.checked;
+      li.classList.toggle('d',c.checked);
+      var st=$$('#ck input').map(function(x){return x.checked});
+      try{localStorage.setItem(key,JSON.stringify(st))}catch(er){}
+    });
+  });
+})();
+</script>
+</body>
+</html>
